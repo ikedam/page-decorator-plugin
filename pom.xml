@@ -16,7 +16,7 @@
   <packaging>hpi</packaging>
 
   <name>PageDecorator plugin</name>
-  <description>Configure contents appended by PageDecorator</description>
+  <description>Provides configure header and footer appended for all pages.</description>
   <url>https://github.com/ikedam/page-decorator-plugin</url>
   <licenses>
     <license>
