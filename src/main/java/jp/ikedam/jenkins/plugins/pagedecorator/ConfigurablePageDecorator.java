@@ -128,6 +128,11 @@ public class ConfigurablePageDecorator extends PageDecorator {
             return URL;
         }
         
+        @Override
+        public String getDescription() {
+            return Messages.ConfigurablePageDecorator_ManagementLinkImpl_Description();
+        }
+        
         /**
          * @return the instance of {@link ConfigurablePageDecorator}
          */
