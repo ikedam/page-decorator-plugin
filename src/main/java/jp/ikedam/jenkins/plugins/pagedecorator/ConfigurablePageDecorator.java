@@ -84,11 +84,23 @@ public class ConfigurablePageDecorator extends PageDecorator {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+        setHeader(json.getString("header"));
+        setFooter(json.getString("footer"));
+        save();
+        return true;
+    }
+    
+    /**
      * Displays the link to the configuration page of {@link ConfigurablePageDecorator}
      * in "Manage Jenkins".
      */
     @Extension
     public static class ManagementLinkImpl extends ManagementLink {
+        public static final String URL = "pagedecorator";
         /**
          * @return
          * @see hudson.model.Action#getDisplayName()
@@ -113,7 +125,7 @@ public class ConfigurablePageDecorator extends PageDecorator {
          */
         @Override
         public String getUrlName() {
-            return "pagedecorator";
+            return URL;
         }
         
         /**
@@ -124,37 +136,22 @@ public class ConfigurablePageDecorator extends PageDecorator {
         }
         
         /**
-         * @see ConfigurablePageDecorator#getHeader()
-         */
-        public String getHeader() {
-            return getPageDecorator().getHeader();
-        }
-        
-        /**
-         * @see ConfigurablePageDecorator#getFooter()
-         */
-        public String getFooter() {
-            return getPageDecorator().getFooter();
-        }
-        
-        /**
          * @param req
          * @param rsp
          * @throws IOException
          * @throws ServletException
+         * @throws FormException 
          */
         @RequirePOST
         public synchronized void doConfigSubmit(StaplerRequest req, StaplerResponse rsp)
-                throws IOException, ServletException
+                throws IOException, ServletException, FormException
         {
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             
             ConfigurablePageDecorator pageDecorator = getPageDecorator();
             JSONObject json = req.getSubmittedForm();
-            pageDecorator.setHeader(json.getString("header"));
-            pageDecorator.setFooter(json.getString("footer"));
-            pageDecorator.save();
-            FormApply.success("/manage").generateResponse(req, rsp, null);
+            pageDecorator.configure(req, json);
+            FormApply.success(req.getContextPath()+"/manage").generateResponse(req, rsp, null);
         }
     }
 }
